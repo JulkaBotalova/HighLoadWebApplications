@@ -1,0 +1,30 @@
+version: "3.4"
+
+services:
+  web:
+    image: gitlab.example.ru:4567/root/flask-docker-swarm/web:${CI_COMMIT_SHA}
+    deploy:
+      replicas: 4
+      restart_policy:
+        condition: on-failure
+    command: gunicorn -w 3 --bind 0.0.0.0:5000 wsgi:app
+
+  nginx:
+    image: gitlab.example.ru:4567/root/flask-docker-swarm/nginx:${CI_COMMIT_SHA}
+    deploy:
+      mode: global
+      restart_policy:
+        condition: on-failure
+    ports:
+      - "80:80"
+
+  redis:
+    image: gitlab.example.ru:4567/root/flask-docker-swarm/redis:latest
+    deploy:
+      replicas: 1
+      placement:
+          constraints: [node.role == manager]
+      restart_policy:
+        condition: on-failure
+    ports:
+      - "6378"

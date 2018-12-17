@@ -1,0 +1,5 @@
+Flask==0.12.2
+Redis==2.10.6
+Gunicorn==19.7.1
+Nose2
+Coverage
